@@ -10,72 +10,42 @@
 </head>
 <body>
 
-    <div class="main-wrapper">
-
+    <div class="wrapper">
         <aside>
             <header>
                 <h1 class="logo">CarpiShop</h1>
             </header>
             <nav>
-                <ul class="navbar">
+                <ul class="menu">
                     <li>
-                        <button id="boton-todos" class="boton-categoria active">
-                            <i class="bi bi-hand-index-thumb-fill"></i> Todos los productos
-                        </button>
+                        <button id="todos" class="boton-menu boton-categoria active"><i class="bi bi-hand-index-thumb-fill"></i> Todos los productos</button>
                     </li>
                     <li>
-                        <button id="boton-abrigos" class="boton-categoria">
-                            <i class="bi bi-hand-index-thumb"></i> Abrigos
-                        </button>
+                        <button id="abrigos" class="boton-menu boton-categoria"><i class="bi bi-hand-index-thumb"></i> Abrigos</button>
                     </li>
                     <li>
-                        <button id="boton-camisetas" class="boton-categoria">
-                            <i class="bi bi-hand-index-thumb"></i> Camisetas
-                        </button>
+                        <button id="camisetas" class="boton-menu boton-categoria"><i class="bi bi-hand-index-thumb"></i> Camisetas</button>
                     </li>
                     <li>
-                        <button id="boton-pantalones" class="boton-categoria">
-                            <i class="bi bi-hand-index-thumb"></i> Pantalones
-                        </button>
+                        <button id="pantalones" class="boton-menu boton-categoria"><i class="bi bi-hand-index-thumb"></i> Pantalones</button>
                     </li>
                     <li>
-                        <button id="boton-carrito" class="boton-categoria boton-carrito">
-                            <i class="bi bi-cart-fill"></i> Carrito <span id="carrito-numero" class="carrito-numero">0</span>
-                        </button>
+                        <a class="boton-menu boton-carrito" href="./carrito.html">
+                            <i class="bi bi-cart-fill"></i> Carrito <span id="numerito" class="numerito">0</span>
+                        </a>
                     </li>
                 </ul>
             </nav>
             <footer>
-                <p class="footer-parrafo">© 2022 Carpi Coder</p>
+                <p class="texto-footer">© 2022 Carpi Coder</p>
             </footer>
         </aside>
         <main>
-            <h2 class="titulo" id="titulo">Todos los productos</h2>
-
-            <div class="contenedor-productos" id="contenedor-productos">
-                <!-- Esto se va a completar con los productos en JS -->
+            <h2 class="titulo-principal" id="titulo-principal">Todos los productos</h2>
+            <div id="contenedor-productos" class="contenedor-productos">
+                <!-- Esto se va a rellenar con JS -->
             </div>
-
-            <div class="contenedor-carrito disabled" id="contenedor-carrito">
-                <div class="carrito-productos" id="carrito-productos">
-                    <!-- Esto se va a completar con los productos en Carrito en JS -->
-                </div>
-                <div class="carrito-acciones disabled" id="carrito-acciones">
-                    <div class="carrito-acciones-izquierda">
-                        <button class="carrito-acciones-btn vaciar" id="vaciar-carrito">Vaciar carrito</button>
-                    </div>
-                    <div class="carrito-acciones-derecha">
-                        <div class="carrito-acciones-total">
-                            <p>Total:</p>
-                            <p id="total"><!-- Esto se va a completar con el Total en JS --></p>
-                        </div>
-                        <button class="carrito-acciones-btn comprar">Comprar ahora</button>
-                    </div>
-                </div>
-            </div>
-
         </main>
-
     </div>
     
     <script src="./js/main.js"></script>

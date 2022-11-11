@@ -185,188 +185,95 @@ const productos = [
     }
 ];
 
-const contenedorProductos = document.querySelector("#contenedor-productos");
-const contenedorCarrito = document.querySelector("#contenedor-carrito");
 
-function actualizarContenedorProductos(productosElegidos) {
+const contenedorProductos = document.querySelector("#contenedor-productos");
+const botonesCategorias = document.querySelectorAll(".boton-categoria");
+const tituloPrincipal = document.querySelector("#titulo-principal");
+let botonesAgregar = document.querySelectorAll(".producto-agregar");
+const numerito = document.querySelector("#numerito");
+
+
+function cargarProductos(productosElegidos) {
+
     contenedorProductos.innerHTML = "";
 
-    productosElegidos.forEach((producto) => {
-    
+    productosElegidos.forEach(producto => {
+
         const div = document.createElement("div");
         div.classList.add("producto");
-    
         div.innerHTML = `
-            <img class="producto-imagen" src="${producto.imagen}" alt="">
+            <img class="producto-imagen" src="${producto.imagen}" alt="${producto.titulo}">
             <div class="producto-detalles">
-                <h3 class="producto-nombre">${producto.titulo}</h3>
+                <h3 class="producto-titulo">${producto.titulo}</h3>
                 <p class="producto-precio">$${producto.precio}</p>
-                <button class="producto-agregar" id="agregar-${producto.id}">Agregar</button>
+                <button class="producto-agregar" id="${producto.id}">Agregar</button>
             </div>
-        `
+        `;
+
         contenedorProductos.append(div);
-    
-    });
+    })
 
     actualizarBotonesAgregar();
 }
 
-actualizarContenedorProductos(productos);
+cargarProductos(productos);
 
-const botones = document.querySelectorAll(".boton-categoria");
-const titulo = document.querySelector("#titulo");
-const contenedorTotal = document.querySelector("#total");
-const carritoAcciones = document.querySelector("#carrito-acciones");
+botonesCategorias.forEach(boton => {
+    boton.addEventListener("click", (e) => {
 
-botones.forEach(boton => {
+        botonesCategorias.forEach(boton => boton.classList.remove("active"));
+        e.currentTarget.classList.add("active");
 
-    boton.addEventListener("click", () => {
-
-        botones.forEach(boton => boton.classList.remove("active"));
-        boton.classList.add("active");
-
-        if (boton.id === "boton-todos") {
-
-            actualizarContenedorProductos(productos);
-            titulo.innerText = "Todos los productos";
-
-            contenedorProductos.classList.remove("disabled");
-            contenedorCarrito.classList.add("disabled");
-
-        } else if (boton.id === "boton-carrito") {
-
-            titulo.innerText = "Carrito";
-            contenedorProductos.classList.add("disabled");
-            contenedorCarrito.classList.remove("disabled");
-
+        if (e.currentTarget.id != "todos") {
+            const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id);
+            tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+            const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
+            cargarProductos(productosBoton);
         } else {
-
-            let productoSeleccionado = productos.find(producto => "boton-" + producto.categoria.id === boton.id);
-            titulo.innerText = productoSeleccionado.categoria.nombre;
-
-            const productosNuevos = productos.filter(producto => "boton-" + producto.categoria.id === boton.id);
-            actualizarContenedorProductos(productosNuevos);
-
-            contenedorProductos.classList.remove("disabled");
-            contenedorCarrito.classList.add("disabled");
-
+            tituloPrincipal.innerText = "Todos los productos";
+            cargarProductos(productos);
         }
 
-    });
-
-})
-
-const productosEnCarrito = [];
+    })
+});
 
 function actualizarBotonesAgregar() {
+    botonesAgregar = document.querySelectorAll(".producto-agregar");
 
-    const botonesAgregar = document.querySelectorAll(".producto-agregar");
     botonesAgregar.forEach(boton => {
         boton.addEventListener("click", agregarAlCarrito);
-    })
+    });
+}
 
-};
+let productosEnCarrito;
+
+let productosEnCarritoLS = localStorage.getItem("productos-en-carrito");
+
+if (productosEnCarritoLS) {
+    productosEnCarrito = JSON.parse(productosEnCarritoLS);
+    actualizarNumerito();
+} else {
+    productosEnCarrito = [];
+}
 
 function agregarAlCarrito(e) {
-
-    const productoElegido = productos.find(producto => "agregar-" + producto.id === e.currentTarget.id);
-
-    if (productosEnCarrito.find(producto => producto.id === productoElegido.id)) {
-        const productoIndex = productosEnCarrito.findIndex(producto => producto.id === productoElegido.id);
-        productosEnCarrito[productoIndex].cantidad++;
-    } else {
-        productoElegido.cantidad = 1;
-        productosEnCarrito.push(productoElegido);
-    }
-
-    actualizarCarritoProductos();
-
-}
-
-
-const carritoProductos = document.querySelector("#carrito-productos");
-
-function actualizarCarritoProductos() {
-    carritoProductos.innerHTML = "";
-
-    productosEnCarrito.forEach(producto => {
-        const div = document.createElement("div");
-        div.classList.add("carrito-producto");
-        div.innerHTML = `
-            <img class="carrito-producto-imagen" src="${producto.imagen}" alt="${producto.titulo}">
-            <div class="carrito-producto-nombre">
-                <small>Nombre</small>
-                <h3>${producto.titulo}</h3>
-            </div>
-            <div class="carrito-producto-cantidad">
-                <small>Cantidad</small>
-                <p>${producto.cantidad}</p>
-            </div>
-            <div class="carrito-producto-precio">
-                <small>Precio</small>
-                <p>$${producto.precio}</p>
-            </div>
-            <div class="carrito-producto-subtotal">
-                <small>Subtotal</small>
-                <p>$${producto.precio * producto.cantidad}</p>
-            </div>
-            <button class="carrito-producto-eliminar" id="eliminar-${producto.id}">
-                <i class="bi bi-trash-fill"></i>
-            </button>
-        `;
-        carritoProductos.append(div);
-    });
-
-    actualizarBotonesEliminar();
-    actualizarTotal();
-    actualizarCarritoNumero();
-    carritoVacio();
-
-}
-
-function actualizarBotonesEliminar() {
-    const botonesEliminar = document.querySelectorAll(".carrito-producto-eliminar");
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener("click", eliminarDelCarrito);
-    })
-};
-
-function eliminarDelCarrito(e) {
     const idBoton = e.currentTarget.id;
-    const index = productosEnCarrito.findIndex(producto => "eliminar-" + producto.id === idBoton);
-    productosEnCarrito.splice(index, 1);
-    actualizarCarritoProductos();
-}
+    const productoAgregado = productos.find(producto => producto.id === idBoton);
 
-
-function actualizarTotal() {
-    const totalCalculado = productosEnCarrito.reduce((acc, producto) => acc + (producto.precio * producto.cantidad), 0);
-    contenedorTotal.textContent = "$" + totalCalculado;
-}
-
-const botonVaciarCarrito = document.querySelector("#vaciar-carrito");
-botonVaciarCarrito.addEventListener("click", vaciarCarrito);
-
-function vaciarCarrito() {
-    productosEnCarrito.length = 0;
-    actualizarCarritoProductos();
-}
-
-
-const carritoNumero = document.querySelector("#carrito-numero");
-function actualizarCarritoNumero() {
-    const numeroCalculado = productosEnCarrito.reduce((acc, producto) => acc + producto.cantidad, 0);
-    carritoNumero.textContent = numeroCalculado;
-}
-
-
-function carritoVacio() {
-    if (productosEnCarrito.length === 0) {
-        carritoAcciones.classList.add("disabled");
-        carritoProductos.innerHTML = "<p class='carrito-vacio'>Tu carrito está vacío. <i class='bi bi-emoji-frown'></i></p>";
+    if(productosEnCarrito.some(producto => producto.id === idBoton)) {
+        const index = productosEnCarrito.findIndex(producto => producto.id === idBoton);
+        productosEnCarrito[index].cantidad++;
     } else {
-        carritoAcciones.classList.remove("disabled");
+        productoAgregado.cantidad = 1;
+        productosEnCarrito.push(productoAgregado);
     }
+
+    actualizarNumerito();
+
+    localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
 }
 
-carritoVacio();
+function actualizarNumerito() {
+    let nuevoNumerito = productosEnCarrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+    numerito.innerText = nuevoNumerito;
+}
