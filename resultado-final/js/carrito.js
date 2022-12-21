@@ -49,6 +49,9 @@ function cargarProductosCarrito() {
             contenedorCarritoProductos.append(div);
         })
     
+    actualizarBotonesEliminar();
+    actualizarTotal();
+	
     } else {
         contenedorCarritoVacio.classList.remove("disabled");
         contenedorCarritoProductos.classList.add("disabled");
@@ -56,8 +59,6 @@ function cargarProductosCarrito() {
         contenedorCarritoComprado.classList.add("disabled");
     }
 
-    actualizarBotonesEliminar();
-    actualizarTotal();
 }
 
 cargarProductosCarrito();
